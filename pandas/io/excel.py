@@ -321,11 +321,11 @@ class ExcelFile(object):
 
         epoch1904 = self.book.datemode
 
-        def _parse_cell(cell_contents, cell_typ):
+        def _parse_cell(cell_contents, cell_typ, parse_dates=True):
             """converts the contents of the cell into a pandas
                appropriate object"""
 
-            if cell_typ == XL_CELL_DATE:
+            if cell_typ == XL_CELL_DATE and parse_dates:
                 if xlrd_0_9_3:
                     # Use the newer xlrd datetime handling.
                     cell_contents = xldate.xldate_as_datetime(cell_contents,
@@ -405,7 +405,7 @@ class ExcelFile(object):
                         should_parse[j] = self._should_parse(j, parse_cols)
 
                     if parse_cols is None or should_parse[j]:
-                        row.append(_parse_cell(value, typ))
+                        row.append(_parse_cell(value, typ, parse_dates))
                 data.append(row)
 
             if sheet.nrows == 0:
